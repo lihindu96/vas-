@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VAS Module - Real-Time Tracking Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>VAS Module - Real-Time Tracking Dashboard</h1>
+            <p>Value Added Services for Warehouse Management</p>
+        </header>
+
+        <!-- Upload Section -->
+        <section class="upload-section">
+            <h2>Upload Inbound Data</h2>
+            <form id="uploadForm" enctype="multipart/form-data">
+                <input type="file" id="fileInput" accept=".xlsx,.xls" required>
+                <button type="submit">Upload Excel</button>
+            </form>
+            <div id="uploadMessage" class="message"></div>
+        </section>
+
+        <!-- Dashboard Stats -->
+        <section class="stats-section">
+            <h2>Overview Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Inbound</h3>
+                    <p class="stat-value" id="totalInbound">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Pending Tasks</h3>
+                    <p class="stat-value" id="pendingTasks">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>In Progress</h3>
+                    <p class="stat-value" id="inProgressTasks">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Completed</h3>
+                    <p class="stat-value" id="completedTasks">0</p>
+                </div>
+                <div class="stat-card highlight">
+                    <h3>Completion Rate</h3>
+                    <p class="stat-value" id="completionPercentage">0%</p>
+                </div>
+                <div class="stat-card highlight">
+                    <h3>Ready for Dispatch</h3>
+                    <p class="stat-value" id="totalOutbound">0</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Current Batches -->
+        <section class="batches-section">
+            <h2>Current Batches Being Processed</h2>
+            <div id="batchesList" class="batches-list"></div>
+        </section>
+
+        <!-- Task Breakdown -->
+        <section class="breakdown-section">
+            <h2>VAS Task Breakdown by Type</h2>
+            <div id="taskBreakdown" class="task-breakdown"></div>
+        </section>
+
+        <!-- Inbound Items List -->
+        <section class="items-section">
+            <h2>Inbound Items</h2>
+            <div class="filter-controls">
+                <select id="batchFilter">
+                    <option value="">All Batches</option>
+                </select>
+                <button onclick="loadInboundItems()">Refresh</button>
+            </div>
+            <table id="inboundTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>PO Number</th>
+                        <th>Item Code</th>
+                        <th>Description</th>
+                        <th>Quantity</th>
+                        <th>Supplier</th>
+                        <th>Batch ID</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="inboundTableBody">
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Task Details Modal -->
+        <div id="taskModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>VAS Tasks for Item <span id="modalItemCode"></span></h2>
+                <div id="tasksList"></div>
+            </div>
+        </div>
+
+        <!-- Outbound Items -->
+        <section class="outbound-section">
+            <h2>Outbound Items Ready for Dispatch</h2>
+            <button onclick="loadOutboundItems()">Refresh</button>
+            <table id="outboundTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Item Code</th>
+                        <th>Description</th>
+                        <th>Quantity</th>
+                        <th>Created At</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="outboundTableBody">
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
