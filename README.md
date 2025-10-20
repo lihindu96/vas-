@@ -56,7 +56,15 @@ pip install -r requirements.txt
 
 1. Start the application:
 ```bash
+# Development mode (with debug enabled)
 python run.py
+
+# Production mode (debug disabled)
+FLASK_ENV=production python run.py
+
+# Or use a production WSGI server (recommended for production)
+pip install gunicorn
+gunicorn -w 4 -b 0.0.0.0:5000 run:app
 ```
 
 2. Open your browser and navigate to:
@@ -145,6 +153,25 @@ Run the test suite:
 ```bash
 pytest
 ```
+
+## Security Considerations
+
+**For Production Deployment:**
+
+1. **Disable Debug Mode**: Set `FLASK_ENV=production` to disable the Flask debugger
+2. **Use HTTPS**: Deploy behind a reverse proxy (nginx) with SSL/TLS
+3. **Authentication**: Implement user authentication and role-based access control
+4. **Database**: Use PostgreSQL or MySQL instead of SQLite for production
+5. **File Upload Security**: The system already validates file types and sizes
+6. **CORS Configuration**: Configure allowed origins in production
+7. **Error Logging**: Errors are logged securely without exposing stack traces to users
+
+**Current Security Features:**
+- File type validation (only .xlsx, .xls allowed)
+- File size limits (16MB maximum)
+- SQL injection protection via SQLAlchemy ORM
+- Input validation on all API endpoints
+- Secure error handling without stack trace exposure
 
 ## License
 

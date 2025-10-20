@@ -74,7 +74,10 @@ def process_excel_upload(file, upload_folder):
         db.session.rollback()
         if os.path.exists(filepath):
             os.remove(filepath)
-        return False, f"Error processing file: {str(e)}", 0
+        # Log the error for debugging but don't expose details to users
+        import logging
+        logging.error(f"Error processing Excel file: {str(e)}", exc_info=True)
+        return False, "Error processing file. Please check the file format and try again.", 0
 
 def update_vas_task_status(task_id, status, assigned_to=None, notes=None):
     """
