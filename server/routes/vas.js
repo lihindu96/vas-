@@ -8,7 +8,8 @@ router.get('/tasks', (req, res) => {
     const tasks = dataStore.getVASTasks();
     res.json(tasks);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Error getting tasks:', error);
+    res.status(500).json({ error: 'Failed to retrieve tasks' });
   }
 });
 
@@ -18,7 +19,8 @@ router.get('/inbound', (req, res) => {
     const items = dataStore.getInboundItems();
     res.json(items);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Error getting inbound items:', error);
+    res.status(500).json({ error: 'Failed to retrieve inbound items' });
   }
 });
 
@@ -61,7 +63,8 @@ router.patch('/tasks/:id/start', (req, res) => {
     }
     res.json(task);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Error starting task:', error);
+    res.status(500).json({ error: 'Failed to start task' });
   }
 });
 
@@ -74,7 +77,8 @@ router.patch('/tasks/:id/complete', (req, res) => {
     }
     res.json(task);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Error completing task:', error);
+    res.status(500).json({ error: 'Failed to complete task' });
   }
 });
 
@@ -87,7 +91,8 @@ router.patch('/tasks/:id', (req, res) => {
     }
     res.json(task);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Error updating task:', error);
+    res.status(500).json({ error: 'Failed to update task' });
   }
 });
 
@@ -97,7 +102,8 @@ router.get('/inbound/:id/tasks', (req, res) => {
     const tasks = dataStore.getVASTasksByInboundItem(req.params.id);
     res.json(tasks);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Error getting tasks for inbound item:', error);
+    res.status(500).json({ error: 'Failed to retrieve tasks' });
   }
 });
 

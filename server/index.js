@@ -20,6 +20,9 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/vas', vasRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 
+// Note: In production, implement rate limiting using express-rate-limit
+// to prevent DoS attacks on file upload and other endpoints
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'healthy', timestamp: new Date().toISOString() });

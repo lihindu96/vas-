@@ -8,7 +8,8 @@ router.get('/stats', (req, res) => {
     const stats = dataStore.getStatistics();
     res.json(stats);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Error getting statistics:', error);
+    res.status(500).json({ error: 'Failed to retrieve statistics' });
   }
 });
 
@@ -37,7 +38,8 @@ router.get('/progress', (req, res) => {
 
     res.json(progress);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Error getting progress:', error);
+    res.status(500).json({ error: 'Failed to retrieve progress' });
   }
 });
 
@@ -67,7 +69,8 @@ router.get('/task-breakdown', (req, res) => {
 
     res.json(breakdown);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Error getting task breakdown:', error);
+    res.status(500).json({ error: 'Failed to retrieve task breakdown' });
   }
 });
 
