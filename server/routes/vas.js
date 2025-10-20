@@ -35,16 +35,20 @@ router.post('/tasks', (req, res) => {
       return res.status(400).json({ error: 'Invalid task type' });
     }
 
+    // Validate and sanitize inputs
+    const sanitizedAssignedTo = assignedTo ? String(assignedTo).substring(0, 100) : '';
+    const sanitizedNotes = notes ? String(notes).substring(0, 1000) : '';
+
     const task = dataStore.createVASTask({
-      inboundItemId,
+      inboundItemId: String(inboundItemId),
       taskType,
-      assignedTo,
-      notes
+      assignedTo: sanitizedAssignedTo,
+      notes: sanitizedNotes
     });
 
     res.status(201).json(task);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: 'Failed to create task' });
   }
 });
 

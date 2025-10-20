@@ -18,6 +18,10 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage: storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB max file size
+    files: 1
+  },
   fileFilter: (req, file, cb) => {
     const ext = path.extname(file.originalname).toLowerCase();
     if (ext !== '.xlsx' && ext !== '.xls') {
@@ -34,20 +38,33 @@ router.post('/', upload.single('file'), (req, res) => {
       return res.status(400).json({ error: 'No file uploaded' });
     }
 
-    // Read the Excel file
+    // Read the Excel file with security considerations
+    // Note: xlsx@0.18.5 has known vulnerabilities (ReDoS and Prototype Pollution)
+    // Mitigation: Limit file size (handled by multer), validate data structure
     const workbook = xlsx.readFile(req.file.path);
     const sheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[sheetName];
     const data = xlsx.utils.sheet_to_json(worksheet);
 
-    // Process each row and create inbound items
+    // Validate data size to prevent DoS
+    if (data.length > 10000) {
+      return res.status(400).json({ error: 'File contains too many rows (max 10000)' });
+    }
+
+    // Process each row and create inbound items with validation
     const createdItems = [];
     data.forEach(row => {
+      // Sanitize inputs to prevent prototype pollution
+      const poNumber = String(row.PONumber || row.poNumber || row['PO Number'] || '').substring(0, 100);
+      const itemCode = String(row.ItemCode || row.itemCode || row['Item Code'] || '').substring(0, 100);
+      const itemDescription = String(row.ItemDescription || row.itemDescription || row['Item Description'] || '').substring(0, 500);
+      const quantity = Math.max(0, Math.min(999999, parseInt(row.Quantity || row.quantity || 0) || 0));
+
       const item = dataStore.createInboundItem({
-        poNumber: row.PONumber || row.poNumber || row['PO Number'] || '',
-        itemCode: row.ItemCode || row.itemCode || row['Item Code'] || '',
-        itemDescription: row.ItemDescription || row.itemDescription || row['Item Description'] || '',
-        quantity: parseInt(row.Quantity || row.quantity || 0)
+        poNumber,
+        itemCode,
+        itemDescription,
+        quantity
       });
       createdItems.push(item);
     });
@@ -59,7 +76,7 @@ router.post('/', upload.single('file'), (req, res) => {
     });
   } catch (error) {
     console.error('Upload error:', error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: 'Failed to process file' });
   }
 });
 
