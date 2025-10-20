@@ -306,7 +306,11 @@ Response:
 ### Running Tests
 
 ```bash
-pytest tests/ -v
+# Run all tests
+pytest -v
+
+# Run specific test file
+pytest tests/test_vas.py -v
 ```
 
 ### Test Coverage
