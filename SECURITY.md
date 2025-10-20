@@ -77,6 +77,15 @@ When deploying to production, implement these additional security measures:
 5. **Rate Limiting**
    - Implement rate limiting on API endpoints
    - Prevent brute force and DoS attacks
+   - Example using express-rate-limit:
+   ```javascript
+   const rateLimit = require('express-rate-limit');
+   const uploadLimiter = rateLimit({
+     windowMs: 15 * 60 * 1000, // 15 minutes
+     max: 10 // limit each IP to 10 requests per windowMs
+   });
+   app.use('/api/upload', uploadLimiter);
+   ```
 
 6. **Security Headers**
    - Add helmet.js for security headers
